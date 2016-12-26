@@ -17,6 +17,8 @@ import (
     "math/big"
     "net/http"
     "os"
+    "regexp"
+    "strings"
     "text/template"
     "time"
 )
@@ -142,6 +144,7 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
 const organization string = "dev"
 const caCertField string = "Base64EncodedCACertificate"
 const userField string = "User"
+const userSlugField string = "UserSlugField"
 const clientCertField string = "Base64EncodedClientCertificate"
 const clientKeyField string = "Base64EncodedClientKey"
 const kubeConfigTemplateString string =`<!DOCTYPE html><html><body bgcolor="black" style="color: green; white-space: pre-wrap; font-family: monospace; max-width:120ch; word-wrap:break-word;"><font color="grey">## COPY THE CONTENTS INTO ` + "`" + `~/.kube/config'</font>
@@ -168,17 +171,17 @@ users:
     client-key-data: {{.` + clientKeyField + `}}
 
 <font color="grey">## RUN A BASIC DEPLOYMENT</font>
-<font color="lime">$ kubectl run {{.` + userField + `}}-echo \
+<font color="lime">$ kubectl run {{.` + userSlugField + `}}-echo \
   --image=gcr.io/google_containers/echoserver:1.4 \
   --port=8080</font>
-deployment "{{.` + userField + `}}-echo" created
+deployment "{{.` + userSlugField + `}}-echo" created
 
 <font color="grey">## EXPOSE IT AS A ` + "`" + `NodePort' SERVICE (NOTE: ` + "`" + `LoadBalancer' SERVICES ARE DISABLED)</font>
-<font color="lime">$ kubectl expose deployment {{.` + userField + `}}-echo --type=NodePort</font>
-service "{{.` + userField + `}}-echo" exposed
+<font color="lime">$ kubectl expose deployment {{.` + userSlugField + `}}-echo --type=NodePort</font>
+service "{{.` + userSlugField + `}}-echo" exposed
 
 <font color="grey">## DETERMINE THE EXPOSED PORT</font>
-<font color="lime">$ kubectl get service {{.` + userField + `}}-echo | grep NodePort:</font>
+<font color="lime">$ kubectl describe service {{.` + userSlugField + `}}-echo | grep NodePort:</font>
 NodePort:               &lt;unset&gt; 300XX/TCP
 
 <font color="grey">## CHECK IT OUT</font>
@@ -261,11 +264,13 @@ func buildWebPage(user string) (string, error) {
     }
 
     kubeConfigBuffer := new(bytes.Buffer)
+    var re = regexp.MustCompile("[^a-z0-9]+")
     kubeConfigTemplate.Execute(kubeConfigBuffer, map[string]string{
             caCertField: base64EncodedCACert,
             clientKeyField: base64.StdEncoding.EncodeToString(keyBuffer.Bytes()),
             clientCertField: base64.StdEncoding.EncodeToString(certBuffer.Bytes()),
             userField: user,
+            userSlugField: strings.Trim(re.ReplaceAllString(strings.ToLower(user), "-"), "-"),
     })
     return kubeConfigBuffer.String(), nil
 }
