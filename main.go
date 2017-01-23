@@ -116,7 +116,7 @@ func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    for _, org := range []string{"pivotal-cf", "pivotal-cf-experimental"} {
+    for _, org := range []string{"pivotal", "pivotal-cf", "pivotal-cf-experimental"} {
         response, err = client.Get("https://api.github.com/user/memberships/orgs/" + org)
         if err != nil {
             println(err.Error())
@@ -185,7 +185,14 @@ service "{{.` + userSlugField + `}}-echo" exposed
 NodePort:               &lt;unset&gt; 300XX/TCP
 
 <font color="grey">## CHECK IT OUT</font>
-<font color="lime">$ open http://dev.kubernetes.click:300XX</font></body></html>`
+<font color="lime">$ open http://dev.kubernetes.click:300XX</font></body></html>
+
+<font color="grey">## START USING <a href="https://www.youtube.com/watch?v=LamKVhe2RSM">Pachyderm</a></font>
+<font color="lime">$ ADDRESS=dev.kubernetes.click:30050 pachctl list-pipeline</font>
+NAME                INPUT               OUTPUT REPO         STATE
+filter              data                filter              <font color="lime">running</font>
+sum                 filter              sum                 <font color="lime">running</font>
+`
 
 func buildWebPage(user string) (string, error) {
     serialNumberLimit := new(big.Int).Lsh(big.NewInt(1), 128)
