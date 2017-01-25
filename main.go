@@ -188,10 +188,10 @@ NodePort:               &lt;unset&gt; 300XX/TCP
 <font color="lime">$ open http://dev.kubernetes.click:300XX</font></body></html>
 
 <font color="grey">## START USING <a href="https://www.youtube.com/watch?v=LamKVhe2RSM">Pachyderm</a></font>
-<font color="lime">$ ADDRESS=dev.kubernetes.click:30050 pachctl list-pipeline</font>
-NAME                INPUT               OUTPUT REPO         STATE
-filter              data                filter              <font color="lime">running</font>
-sum                 filter              sum                 <font color="lime">running</font>
+<font color="lime">$ ADDRESS=dev.kubernetes.click:30050 pachctl version</font>
+COMPONENT           VERSION
+pachctl             1.3.4
+pachd               1.3.4
 `
 
 func buildWebPage(user string) (string, error) {
