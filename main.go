@@ -185,13 +185,19 @@ service "{{.` + userSlugField + `}}-echo" exposed
 NodePort:               &lt;unset&gt; 300XX/TCP
 
 <font color="grey">## CHECK IT OUT</font>
-<font color="lime">$ open http://dev.kubernetes.click:300XX</font></body></html>
+<font color="lime">$ open http://dev.kubernetes.click:300XX</font>
 
 <font color="grey">## START USING <a href="https://www.youtube.com/watch?v=LamKVhe2RSM">Pachyderm</a></font>
 <font color="lime">$ ADDRESS=dev.kubernetes.click:30050 pachctl version</font>
 COMPONENT           VERSION
 pachctl             1.3.4
 pachd               1.3.4
+
+<font color="grey">## START USING CredHub</font>
+<font color="lime">$ <a href="https://drive.google.com/drive/folders/0ByWFneGl-mrdbHBpcXdIeXhmbDA?usp=sharing">credhub</a> api http://dev.kubernetes.click:30016</font>
+<font color="gold">Warning: Insecure HTTP API detected. Data sent to this API could be intercepted in transit by third parties. Secure HTTPS API endpoints are recommended.</font>
+Setting the target url: http://dev.kubernetes.click:30016
+</body></html>
 `
 
 func buildWebPage(user string) (string, error) {
